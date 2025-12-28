@@ -1,3 +1,5 @@
+import { SPOTIFY_TOKEN_KEY } from "@/components/constants";
+import * as SecureStore from "expo-secure-store";
 import { useState } from "react";
 import { Button, StyleSheet, Text, TextInput, View } from "react-native";
 import QRCode from "react-native-qrcode-svg";
@@ -34,7 +36,7 @@ type ApiResult = {
     next: string | null;
 };
 
-const Index = () => {
+const SelectPlaylist = () => {
     const [inputText, setInputText] = useState<string>("");
     const [allTracks, setAllTracks] = useState<Track[]>([]);
 
@@ -51,7 +53,7 @@ const Index = () => {
             while (nextUrl) {
                 const res = await fetch(nextUrl, {
                     headers: new Headers({
-                        Authorization: `Bearer token`,
+                        Authorization: `Bearer ${await SecureStore.getItemAsync(SPOTIFY_TOKEN_KEY)}`,
                     }),
                 });
                 const { next, items } = (await res.json()) as ApiResult;
@@ -63,7 +65,6 @@ const Index = () => {
             console.log(error);
         }
     };
-
     return (
         <View style={styles.container}>
             <Text>Paste spotify Playlist:</Text>
@@ -74,4 +75,5 @@ const Index = () => {
         </View>
     );
 };
-export default Index;
+
+export default SelectPlaylist;
