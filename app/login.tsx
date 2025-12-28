@@ -1,6 +1,6 @@
 import { SPOTIFY_EXPIRES_AT_KEY, SPOTIFY_TOKEN_KEY } from "@/components/constants";
 import * as AuthSession from "expo-auth-session";
-import { router } from "expo-router";
+import { router, Stack } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import { maybeCompleteAuthSession } from "expo-web-browser";
 import { useEffect, useState } from "react";
@@ -99,16 +99,19 @@ const Login = () => {
     };
 
     return (
-        <View style={styles.container}>
-            {accessToken ? (
-                <>
-                    <Text>✅ Logged in to Spotify</Text>
-                    <Button title="Logout" onPress={logout} />
-                </>
-            ) : (
-                <Button title="Login with Spotify" onPress={() => promptAsync()} disabled={!request} />
-            )}
-        </View>
+        <>
+            <Stack.Screen options={{ title: "Select Playlist" }} />
+            <View style={styles.container}>
+                {accessToken ? (
+                    <>
+                        <Text>✅ Logged in to Spotify</Text>
+                        <Button title="Logout" onPress={logout} />
+                    </>
+                ) : (
+                    <Button title="Login with Spotify" onPress={() => promptAsync()} disabled={!request} />
+                )}
+            </View>
+        </>
     );
 };
 export default Login;

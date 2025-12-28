@@ -1,21 +1,15 @@
-import { SPOTIFY_TOKEN_KEY } from "@/components/constants";
-import * as SecureStore from "expo-secure-store";
+import { getValidSpotifyToken } from "@/components/spotifyAuth";
+import { Button, Text, TextInput } from "@react-native-material/core";
+import { Stack, router } from "expo-router";
 import { useState } from "react";
-import { Button, StyleSheet, Text, TextInput, View } from "react-native";
-import QRCode from "react-native-qrcode-svg";
+import { StyleSheet, View } from "react-native";
 
 const styles = StyleSheet.create({
     container: {
-        marginTop: 20,
-        flex: 1,
-        alignItems: "center",
-    },
-    input: {
-        height: 40,
-        margin: 12,
-        borderWidth: 1,
-        padding: 10,
-        width: "80%",
+        display: "flex",
+        margin: 20,
+        flexDirection: "column",
+        gap: 10,
     },
 });
 
@@ -46,6 +40,9 @@ const SelectPlaylist = () => {
         const lastParamAndQuery = inputText.substring(inputText.lastIndexOf("/") + 1);
         const playlistId = lastParamAndQuery.substring(0, lastParamAndQuery.lastIndexOf("?"));
 
+        const token = await getValidSpotifyToken();
+        if (!token) router.replace("/login");
+
         const collectedTracks: Track[] = [];
 
         try {
@@ -53,26 +50,42 @@ const SelectPlaylist = () => {
             while (nextUrl) {
                 const res = await fetch(nextUrl, {
                     headers: new Headers({
-                        Authorization: `Bearer ${await SecureStore.getItemAsync(SPOTIFY_TOKEN_KEY)}`,
+                        Authorization: `Bearer ${token}`,
                     }),
                 });
+                if (res.status === 401) router.replace("/login");
                 const { next, items } = (await res.json()) as ApiResult;
                 nextUrl = next;
                 collectedTracks.push(...items.map((item) => item.track));
             }
             setAllTracks(collectedTracks);
-        } catch (error) {
-            console.log(error);
+        } catch {
+            alert("Error getting playlist");
         }
     };
     return (
-        <View style={styles.container}>
-            <Text>Paste spotify Playlist:</Text>
-            <TextInput style={styles.input} onChangeText={setInputText} value={inputText} />
-            <Button onPress={getSpotifyPlaylist} title="Get playlist" />
-            <Text>Found {allTracks.length} songs</Text>
-            {allTracks.length > 0 && <QRCode value={allTracks[0].uri}></QRCode>}
-        </View>
+        <>
+            <Stack.Screen options={{ title: "Select Playlist" }} />
+            <View style={styles.container}>
+                <Text>Paste spotify Playlist URL:</Text>
+                <TextInput
+                    onChangeText={setInputText}
+                    value={inputText}
+                    placeholder="https://open.spotify.com/playlist/22iWDi8QmSrR6s8YugUzqx?si=4450f909ea374953"
+                    numberOfLines={1}
+                    variant="outlined"
+                />
+                <Button onPress={getSpotifyPlaylist} title="Get tracks" />
+                {allTracks.length > 0 && (
+                    <>
+                        <Text>
+                            Found {allTracks.length} tracks like {allTracks[0].name}, {allTracks[1].name} or{" "}
+                            {allTracks[2].name}
+                        </Text>
+                    </>
+                )}
+            </View>
+        </>
     );
 };
 
