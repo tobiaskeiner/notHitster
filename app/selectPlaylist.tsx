@@ -1,5 +1,6 @@
 import { getValidSpotifyToken } from "@/components/spotifyAuth";
-import { Button, Text, TextInput } from "@react-native-material/core";
+import { ActivityIndicator, Button, Text, TextInput } from "@react-native-material/core";
+import * as Clipboard from "expo-clipboard";
 import { Stack, router } from "expo-router";
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
@@ -33,6 +34,12 @@ type ApiResult = {
 const SelectPlaylist = () => {
     const [inputText, setInputText] = useState<string>("");
     const [allTracks, setAllTracks] = useState<Track[]>([]);
+    const [isLoading, setIsLoading] = useState(false);
+
+    const handlePaste = async () => {
+        const text = await Clipboard.getStringAsync();
+        setInputText(text);
+    };
 
     const getSpotifyPlaylist = async () => {
         setAllTracks([]);
@@ -47,6 +54,7 @@ const SelectPlaylist = () => {
 
         try {
             let nextUrl: string | null = `https://api.spotify.com/v1/playlists/${playlistId}/tracks`;
+            setIsLoading(true);
             while (nextUrl) {
                 const res = await fetch(nextUrl, {
                     headers: new Headers({
@@ -59,7 +67,9 @@ const SelectPlaylist = () => {
                 collectedTracks.push(...items.map((item) => item.track));
             }
             setAllTracks(collectedTracks);
+            setIsLoading(false);
         } catch {
+            setIsLoading(false);
             alert("Error getting playlist");
         }
     };
@@ -75,14 +85,14 @@ const SelectPlaylist = () => {
                     numberOfLines={1}
                     variant="outlined"
                 />
+                <Button onPress={handlePaste} title="Paste from clipboard" variant="outlined" />
                 <Button onPress={getSpotifyPlaylist} title="Get tracks" />
+                {isLoading && <ActivityIndicator size={"large"} />}
                 {allTracks.length > 0 && (
-                    <>
-                        <Text>
-                            Found {allTracks.length} tracks like {allTracks[0].name}, {allTracks[1].name} or{" "}
-                            {allTracks[2].name}
-                        </Text>
-                    </>
+                    <Text>
+                        Found {allTracks.length} tracks like {allTracks[0].name}, {allTracks[1].name} or{" "}
+                        {allTracks[2].name}
+                    </Text>
                 )}
             </View>
         </>
