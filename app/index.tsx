@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
     },
     loginButton: {
         padding: 15,
-    }
+    },
 });
 
 const Index = () => {
@@ -24,10 +24,7 @@ const Index = () => {
 
     const [accessToken, setAccessToken] = useState<string | null>(null);
 
-    const redirectUri = AuthSession.makeRedirectUri({
-        scheme: "nothitster",
-        path: "auth",
-    });
+    const redirectUri = AuthSession.makeRedirectUri({ scheme: "nothitster" });
     const [request, response, promptAsync] = AuthSession.useAuthRequest(
         {
             clientId: "0a3ab371d02142c29138f5f418ac8873",
@@ -116,7 +113,12 @@ const Index = () => {
                         <Button title="Logout" onPress={logout} />
                     </>
                 ) : (
-                    <Button style={styles.loginButton} title="Login with Spotify" onPress={() => promptAsync()} disabled={!request} />
+                    <Button
+                        style={styles.loginButton}
+                        title="Login with Spotify"
+                        onPress={() => promptAsync()}
+                        disabled={!request}
+                    />
                 )}
             </View>
         </>
