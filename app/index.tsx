@@ -1,17 +1,22 @@
 import { SPOTIFY_EXPIRES_AT_KEY, SPOTIFY_TOKEN_KEY } from "@/components/constants";
+import { Button, Text } from "@react-native-material/core";
 import * as AuthSession from "expo-auth-session";
 import { router, Stack } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import { maybeCompleteAuthSession } from "expo-web-browser";
 import { useEffect, useState } from "react";
-import { Button, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 
 const styles = StyleSheet.create({
     container: {
         marginTop: 20,
         flex: 1,
         alignItems: "center",
+        justifyContent: "center",
     },
+    loginButton: {
+        padding: 15,
+    }
 });
 
 const Index = () => {
@@ -111,7 +116,7 @@ const Index = () => {
                         <Button title="Logout" onPress={logout} />
                     </>
                 ) : (
-                    <Button title="Login with Spotify" onPress={() => promptAsync()} disabled={!request} />
+                    <Button style={styles.loginButton} title="Login with Spotify" onPress={() => promptAsync()} disabled={!request} />
                 )}
             </View>
         </>
