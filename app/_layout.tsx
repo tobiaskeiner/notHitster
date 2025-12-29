@@ -10,6 +10,6 @@ const RootLayout = () => {
             <Stack screenOptions={{ statusBarStyle: "dark" }} />
         </GameStoreProvider>
     );
-}
+};
 
 export default RootLayout;
