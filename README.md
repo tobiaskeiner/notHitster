@@ -6,8 +6,7 @@ NotHitster is a simple App, which allows you to guess your favourite Music. It g
 
 ## Prerequisites
 
-You need the App "QRSogn!" for scanning the generated QR Codes and playing the music.
-https://play.google.com/store/apps/details?id=nl.rickgroenewegen.qrsong
+You need the App [QRSong!](https://play.google.com/store/apps/details?id=nl.rickgroenewegen.qrsong) for scanning the generated QR Codes and playing the music.
 
 ## How to play
 
