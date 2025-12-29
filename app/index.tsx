@@ -3,7 +3,6 @@ import { Button, Text } from "@react-native-material/core";
 import * as AuthSession from "expo-auth-session";
 import { router, Stack } from "expo-router";
 import * as SecureStore from "expo-secure-store";
-import { maybeCompleteAuthSession } from "expo-web-browser";
 import { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 
@@ -20,11 +19,9 @@ const styles = StyleSheet.create({
 });
 
 const Index = () => {
-    maybeCompleteAuthSession();
-
     const [accessToken, setAccessToken] = useState<string | null>(null);
 
-    const redirectUri = AuthSession.makeRedirectUri({ scheme: "nothitster" });
+    const redirectUri = AuthSession.makeRedirectUri({ scheme: "nothitster", path: "spotify-auth" });
     const [request, response, promptAsync] = AuthSession.useAuthRequest(
         {
             clientId: "0a3ab371d02142c29138f5f418ac8873",
