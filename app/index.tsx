@@ -19,7 +19,10 @@ const Index = () => {
 
     const [accessToken, setAccessToken] = useState<string | null>(null);
 
-    const redirectUri = AuthSession.makeRedirectUri();
+    const redirectUri = AuthSession.makeRedirectUri({
+        scheme: "nothitster",
+        path: "auth",
+    });
     const [request, response, promptAsync] = AuthSession.useAuthRequest(
         {
             clientId: "0a3ab371d02142c29138f5f418ac8873",

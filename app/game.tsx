@@ -44,7 +44,7 @@ const Game = () => {
     return (
         <>
             <Stack.Screen options={{ title: "Playing" }} />
-            <View style={{ margin: 20, gap:20, alignItems: "center" }}>
+            <View style={{ margin: 20, gap: 20, alignItems: "center" }}>
                 {currentSong && (
                     <>
                         {showSolution ? (
