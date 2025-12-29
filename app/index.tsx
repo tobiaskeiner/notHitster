@@ -14,7 +14,7 @@ const styles = StyleSheet.create({
     },
 });
 
-const Login = () => {
+const Index = () => {
     maybeCompleteAuthSession();
 
     const [accessToken, setAccessToken] = useState<string | null>(null);
@@ -114,4 +114,4 @@ const Login = () => {
         </>
     );
 };
-export default Login;
+export default Index;

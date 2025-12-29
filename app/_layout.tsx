@@ -1,5 +1,10 @@
+import { GameStoreProvider } from "@/components/provider";
 import { Stack } from "expo-router";
 
 export default function RootLayout() {
-    return <Stack screenOptions={{ statusBarStyle: "dark" }} />;
+    return (
+        <GameStoreProvider>
+            <Stack screenOptions={{ statusBarStyle: "dark" }} />
+        </GameStoreProvider>
+    );
 }

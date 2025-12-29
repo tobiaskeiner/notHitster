@@ -1,4 +1,6 @@
+import { useGameStore } from "@/components/provider";
 import { getValidSpotifyToken } from "@/components/spotifyAuth";
+import { ApiResult, Item } from "@/components/types";
 import { ActivityIndicator, Button, Text, TextInput } from "@react-native-material/core";
 import * as Clipboard from "expo-clipboard";
 import { Stack, router } from "expo-router";
@@ -14,27 +16,12 @@ const styles = StyleSheet.create({
     },
 });
 
-type Track = {
-    name: string;
-    id: string;
-    uri: string;
-};
-type Item = {
-    track: Track;
-};
-
-type ApiResult = {
-    items: Item[];
-    total: number;
-    offset: number;
-    limit: number;
-    next: string | null;
-};
-
 const SelectPlaylist = () => {
     const [inputText, setInputText] = useState<string>("");
-    const [allTracks, setAllTracks] = useState<Track[]>([]);
+    const [allSpotifyItems, setAllSpotifyItems] = useState<Item[]>([]);
     const [isLoading, setIsLoading] = useState(false);
+
+    const { setSpotifyItems } = useGameStore();
 
     const handlePaste = async () => {
         const text = await Clipboard.getStringAsync();
@@ -42,15 +29,15 @@ const SelectPlaylist = () => {
     };
 
     const getSpotifyPlaylist = async () => {
-        setAllTracks([]);
+        setAllSpotifyItems([]);
         // example url: https://open.spotify.com/playlist/22iWDi8QmSrR6s8YugUzqx?si=4450f909ea374953
         const lastParamAndQuery = inputText.substring(inputText.lastIndexOf("/") + 1);
         const playlistId = lastParamAndQuery.substring(0, lastParamAndQuery.lastIndexOf("?"));
 
         const token = await getValidSpotifyToken();
-        if (!token) router.replace("/login");
+        if (!token) router.replace("/");
 
-        const collectedTracks: Track[] = [];
+        const collectedSpotifyItems: Item[] = [];
 
         try {
             let nextUrl: string | null = `https://api.spotify.com/v1/playlists/${playlistId}/tracks`;
@@ -61,12 +48,12 @@ const SelectPlaylist = () => {
                         Authorization: `Bearer ${token}`,
                     }),
                 });
-                if (res.status === 401) router.replace("/login");
+                if (res.status === 401) router.replace("/");
                 const { next, items } = (await res.json()) as ApiResult;
                 nextUrl = next;
-                collectedTracks.push(...items.map((item) => item.track));
+                collectedSpotifyItems.push(...items.map((item) => ({ track: item.track })));
             }
-            setAllTracks(collectedTracks);
+            setAllSpotifyItems(collectedSpotifyItems);
             setIsLoading(false);
         } catch {
             setIsLoading(false);
@@ -87,12 +74,21 @@ const SelectPlaylist = () => {
                 />
                 <Button onPress={handlePaste} title="Paste from clipboard" variant="outlined" />
                 <Button onPress={getSpotifyPlaylist} title="Get tracks" />
-                {isLoading && <ActivityIndicator size={"large"} />}
-                {allTracks.length > 0 && (
-                    <Text>
-                        Found {allTracks.length} tracks like {allTracks[0].name}, {allTracks[1].name} or{" "}
-                        {allTracks[2].name}
-                    </Text>
+                {isLoading && <ActivityIndicator style={{ margin: 20 }} size={"large"} />}
+                {allSpotifyItems.length > 0 && (
+                    <>
+                        <Text>
+                            Found {allSpotifyItems.length} tracks like {allSpotifyItems[0].track.name},{" "}
+                            {allSpotifyItems[1].track.name} or {allSpotifyItems[2].track.name}
+                        </Text>
+                        <Button
+                            title="Start game"
+                            onPress={() => {
+                                setSpotifyItems(allSpotifyItems);
+                                router.push("/game");
+                            }}
+                        />
+                    </>
                 )}
             </View>
         </>
