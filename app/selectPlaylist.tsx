@@ -1,18 +1,66 @@
 import { useGameStore } from "@/components/provider";
 import { getValidSpotifyToken } from "@/components/spotifyAuth";
 import { ApiResult, Item } from "@/components/types";
-import { ActivityIndicator, Button, Text, TextInput } from "@react-native-material/core";
+import Feather from "@expo/vector-icons/Feather";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import * as Clipboard from "expo-clipboard";
 import { Stack, router } from "expo-router";
 import { useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { ActivityIndicator, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 
 const styles = StyleSheet.create({
     container: {
-        display: "flex",
-        margin: 20,
+        gap: 20,
+    },
+    urlSelectionContainer: {
+        backgroundColor: "white",
+        padding: 20,
+        borderRadius: 20,
         flexDirection: "column",
+        gap: 15,
+    },
+    pasteText: {
+        fontFamily: "JosefinSans_400Regular",
+        fontSize: 20,
+    },
+    textInput: {
+        borderWidth: 2,
+        borderColor: "#79C9C5",
+        borderRadius: 20,
+    },
+    pasteButton: {
+        borderRadius: 30,
+        backgroundColor: "#79C9C5",
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center",
+        alignSelf: "center",
+        paddingHorizontal: 20,
+        paddingVertical: 10,
         gap: 10,
+    },
+    pasteButtonText: {
+        color: "white",
+        alignSelf: "center",
+        fontFamily: "JosefinSans_400Regular",
+        fontSize: 20,
+    },
+    queryButton: {
+        borderRadius: 30,
+        backgroundColor: "#3F9AAE",
+        display: "flex",
+        flexDirection: "row",
+        paddingHorizontal: 20,
+        paddingVertical: 10,
+        gap: 10,
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    queryButtonText: {
+        color: "white",
+        fontFamily: "JosefinSans_400Regular",
+        fontSize: 26,
     },
 });
 
@@ -63,32 +111,44 @@ const SelectPlaylist = () => {
     return (
         <>
             <Stack.Screen options={{ title: "Select Playlist" }} />
-            <View style={styles.container}>
-                <Text>Paste spotify Playlist URL:</Text>
-                <TextInput
-                    onChangeText={setInputText}
-                    value={inputText}
-                    placeholder="https://open.spotify.com/playlist/22iWDi8QmSrR6s8YugUzqx?si=4450f909ea374953"
-                    numberOfLines={1}
-                    variant="outlined"
-                />
-                <Button onPress={handlePaste} title="Paste from clipboard" variant="outlined" />
-                <Button onPress={getSpotifyPlaylist} title="Get tracks" />
-                {isLoading && <ActivityIndicator style={{ margin: 20 }} size={"large"} />}
-                {allSpotifyItems.length > 0 && (
-                    <>
-                        <Text>
-                            Found {allSpotifyItems.length} tracks like {allSpotifyItems[0].track.name},{" "}
-                            {allSpotifyItems[1].track.name} or {allSpotifyItems[2].track.name}
-                        </Text>
-                        <Button
-                            title="Start game"
-                            onPress={() => {
-                                setSpotifyItems(allSpotifyItems);
-                                router.push("/game");
-                            }}
+            <View style={{ margin: 20, flexDirection: "column", height: "90%", justifyContent: "space-between" }}>
+                <View style={styles.container}>
+                    <View style={styles.urlSelectionContainer}>
+                        <Text style={styles.pasteText}>Paste Spotify Playlist URL:</Text>
+                        <TextInput
+                            style={styles.textInput}
+                            onChangeText={setInputText}
+                            value={inputText}
+                            placeholder="https://open.spotify.com/playlist..."
+                            numberOfLines={1}
                         />
-                    </>
+                        <Pressable onPress={handlePaste} style={styles.pasteButton}>
+                            <Feather name="clipboard" size={20} color="white" />
+                            <Text style={styles.pasteButtonText}>Paste from clipboard</Text>
+                        </Pressable>
+                    </View>
+                    <Pressable onPress={getSpotifyPlaylist} style={styles.queryButton}>
+                        <MaterialIcons name="multitrack-audio" size={20} color="white" />
+                        <Text style={styles.queryButtonText}>Get tracks</Text>
+                    </Pressable>
+                    {isLoading && <ActivityIndicator style={{ margin: 20 }} size={"large"} />}
+                    {allSpotifyItems.length > 0 && (
+                        <Text style={{ fontFamily: "JosefinSans_700Bold", fontSize: 20, alignSelf: "center" }}>
+                            Found {allSpotifyItems.length} tracks 🎶
+                        </Text>
+                    )}
+                </View>
+                {allSpotifyItems.length > 0 && (
+                    <Pressable
+                        style={styles.queryButton}
+                        onPress={() => {
+                            setSpotifyItems(allSpotifyItems);
+                            router.push("/game");
+                        }}
+                    >
+                        <Ionicons name="play-outline" size={20} color="white" />
+                        <Text style={styles.queryButtonText}>Start game</Text>
+                    </Pressable>
                 )}
             </View>
         </>
