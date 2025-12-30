@@ -19,6 +19,11 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         flexDirection: "column",
         gap: 15,
+        shadowColor: "#000",
+        shadowOpacity: 0.15,
+        shadowRadius: 12,
+        shadowOffset: { width: 0, height: 6 },
+        elevation: 6,
     },
     pasteText: {
         fontFamily: "JosefinSans_400Regular",
