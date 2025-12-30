@@ -156,7 +156,8 @@ const Game = () => {
                                 </View>
                             ) : (
                                 <View style={styles.solutionCard}>
-                                <QRCode size={250} value={currentSong.track.uri} /></View>
+                                    <QRCode size={250} value={currentSong.track.uri} />
+                                </View>
                             )}
                         </>
                     )}

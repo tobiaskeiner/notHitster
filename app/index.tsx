@@ -3,7 +3,7 @@ import * as AuthSession from "expo-auth-session";
 import { router, Stack } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import { useEffect, useState } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Platform, Pressable, StyleSheet, Text, View } from "react-native";
 
 const styles = StyleSheet.create({
     container: {
@@ -45,7 +45,13 @@ const styles = StyleSheet.create({
 const Index = () => {
     const [accessToken, setAccessToken] = useState<string | null>(null);
 
-    const redirectUri = AuthSession.makeRedirectUri({ scheme: "nothitster", path: "spotify-auth" });
+    const redirectUri =
+        Platform.OS === "web"
+            ? "https://tobiaskeiner.github.io/notHitster/spotify-auth"
+            : AuthSession.makeRedirectUri({
+                  scheme: "nothitster",
+                  path: "spotify-auth",
+              });
     const [request, response, promptAsync] = AuthSession.useAuthRequest(
         {
             clientId: "0a3ab371d02142c29138f5f418ac8873",

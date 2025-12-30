@@ -21,6 +21,7 @@ Currently only available for android.
 7. Use the App QRSong! to play the music
 
 ## Screenshots
+
 <img width="270" height="600" alt="Screenshot_20251230-154519" src="https://github.com/user-attachments/assets/60786cd0-a9c4-49cd-a281-304395c1fcd5" />
 <img width="270" height="600" alt="Screenshot_20251230-154528" src="https://github.com/user-attachments/assets/89708f28-c712-48ae-b34c-5d729937c86f" />
 <img width="270" height="600" alt="Screenshot_20251230-154536" src="https://github.com/user-attachments/assets/9fa3f429-8c27-4fb6-a0a5-b4d92a6af3be" />
