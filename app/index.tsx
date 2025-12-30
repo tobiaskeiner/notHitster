@@ -1,20 +1,44 @@
 import { SPOTIFY_EXPIRES_AT_KEY, SPOTIFY_TOKEN_KEY } from "@/components/constants";
-import { Button, Text } from "@react-native-material/core";
 import * as AuthSession from "expo-auth-session";
 import { router, Stack } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import { useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 
 const styles = StyleSheet.create({
     container: {
-        marginTop: 20,
+        margin: 20,
         flex: 1,
-        alignItems: "center",
         justifyContent: "center",
+        gap: 20,
     },
-    loginButton: {
-        padding: 15,
+    logo: {
+        fontFamily: "JosefinSans_700Bold",
+        fontSize: 70,
+    },
+    loginPressable: {
+        backgroundColor: "#3F9AAE",
+        alignSelf: "flex-start",
+        borderRadius: 30,
+    },
+    loginText: {
+        color: "white",
+        fontFamily: "JosefinSans_500Medium",
+        fontSize: 30,
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+    },
+    logoutPressable: {
+        backgroundColor: "#FFE2AF",
+        alignSelf: "flex-start",
+        borderRadius: 30,
+    },
+    logoutText: {
+        color: "black",
+        fontFamily: "JosefinSans_500Medium",
+        fontSize: 30,
+        paddingVertical: 10,
+        paddingHorizontal: 20,
     },
 });
 
@@ -102,20 +126,17 @@ const Index = () => {
 
     return (
         <>
-            <Stack.Screen options={{ title: "Select Playlist" }} />
+            <Stack.Screen options={{ title: "Login" }} />
             <View style={styles.container}>
+                <Text style={styles.logo}>not{"\n"}Hitster</Text>
                 {accessToken ? (
-                    <>
-                        <Text>✅ Logged in to Spotify</Text>
-                        <Button title="Logout" onPress={logout} />
-                    </>
+                    <Pressable onPress={logout} style={styles.logoutPressable}>
+                        <Text style={styles.logoutPressable}>Disconnect Spotify</Text>
+                    </Pressable>
                 ) : (
-                    <Button
-                        style={styles.loginButton}
-                        title="Login with Spotify"
-                        onPress={() => promptAsync()}
-                        disabled={!request}
-                    />
+                    <Pressable onPress={() => promptAsync()} disabled={!request} style={styles.loginPressable}>
+                        <Text style={styles.loginText}>Connect with Spotify</Text>
+                    </Pressable>
                 )}
             </View>
         </>
