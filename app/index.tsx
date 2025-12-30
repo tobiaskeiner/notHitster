@@ -1,7 +1,7 @@
 import { SPOTIFY_EXPIRES_AT_KEY, SPOTIFY_TOKEN_KEY } from "@/components/constants";
+import { deleteItem, getItem, setItem } from "@/components/store-helper";
 import * as AuthSession from "expo-auth-session";
 import { router, Stack } from "expo-router";
-import * as SecureStore from "expo-secure-store";
 import { useEffect, useState } from "react";
 import { Platform, Pressable, StyleSheet, Text, View } from "react-native";
 
@@ -73,7 +73,7 @@ const Index = () => {
 
     useEffect(() => {
         const loadToken = async () => {
-            const storedToken = await SecureStore.getItemAsync(SPOTIFY_TOKEN_KEY);
+            const storedToken = await getItem(SPOTIFY_TOKEN_KEY);
             if (storedToken) {
                 setAccessToken(storedToken);
             }
@@ -110,11 +110,11 @@ const Index = () => {
                     const token = tokenResponse.accessToken;
 
                     if (token) {
-                        await SecureStore.setItemAsync(SPOTIFY_TOKEN_KEY, token);
+                        await setItem(SPOTIFY_TOKEN_KEY, token);
                         setAccessToken(token);
                     }
                     if (expiresAt) {
-                        await SecureStore.setItemAsync(SPOTIFY_EXPIRES_AT_KEY, expiresAt.toString());
+                        await setItem(SPOTIFY_EXPIRES_AT_KEY, expiresAt.toString());
                     }
                 } catch (error) {
                     console.error("Spotify token exchange failed", error);
@@ -126,7 +126,7 @@ const Index = () => {
     }, [response, redirectUri, request?.codeVerifier]);
 
     const logout = async () => {
-        await SecureStore.deleteItemAsync(SPOTIFY_TOKEN_KEY);
+        await deleteItem(SPOTIFY_TOKEN_KEY);
         setAccessToken(null);
     };
 
