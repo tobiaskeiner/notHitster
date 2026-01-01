@@ -74,7 +74,8 @@ const Index = () => {
     useEffect(() => {
         const loadToken = async () => {
             const storedToken = await getItem(SPOTIFY_TOKEN_KEY);
-            if (storedToken) {
+            const expiresAt = (await getItem(SPOTIFY_EXPIRES_AT_KEY)) ?? "0";
+            if (storedToken && Number(expiresAt) > Date.now()) {
                 setAccessToken(storedToken);
             }
         };

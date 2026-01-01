@@ -1,12 +1,14 @@
+import { SPOTIFY_EXPIRES_AT_KEY, SPOTIFY_TOKEN_KEY } from "@/components/constants";
 import { useGameStore } from "@/components/provider";
 import { getValidSpotifyToken } from "@/components/spotifyAuth";
+import { getItem } from "@/components/store-helper";
 import { ApiResult, Item } from "@/components/types";
 import Feather from "@expo/vector-icons/Feather";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import * as Clipboard from "expo-clipboard";
 import { Stack, router } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ActivityIndicator, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 
 const styles = StyleSheet.create({
@@ -75,6 +77,18 @@ const SelectPlaylist = () => {
     const [isLoading, setIsLoading] = useState(false);
 
     const { setSpotifyItems } = useGameStore();
+
+    useEffect(() => {
+        const loadToken = async () => {
+            const storedToken = await getItem(SPOTIFY_TOKEN_KEY);
+            const expiresAt = (await getItem(SPOTIFY_EXPIRES_AT_KEY)) ?? "0";
+            if (!storedToken || Number(expiresAt) <= Date.now()) {
+                router.replace("/");
+            }
+        };
+
+        loadToken();
+    }, []);
 
     const handlePaste = async () => {
         const text = await Clipboard.getStringAsync();
