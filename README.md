@@ -10,7 +10,7 @@ You need the App [QRSong!](https://play.google.com/store/apps/details?id=nl.rick
 
 ## How to play
 
-Currently only available for android.
+Currently only available for android and web.
 
 1. Download the app from the releases, start the app and login to spotify
 2. Allow the app to access your data (only personal and public playlists are read)
@@ -19,6 +19,59 @@ Currently only available for android.
 5. Click the "Get tracks" button, so that the app can get all tracks of the playlist from Spotify
 6. Start the game
 7. Use the App QRSong! to play the music
+
+## How to setup
+
+This Project uses the Spotify Web API. Because this is only a hobby project, it is only possible to allow 25 users, which have to be explictly white listed.
+Meaning that if you want to use this app (and do not know me personally), you will have to setup your own Spotfiy Developer API Account. You can find documentation for the setup [here](https://developer.spotify.com/documentation/web-api/tutorials/getting-started).
+
+Then simply replace the clientId in `index.tsx` and change the `redirectUri`.
+
+```ts
+// index.tsx
+const [request, response, promptAsync] = AuthSession.useAuthRequest(
+    {
+        clientId: "<yourClientId>",
+        scopes: [
+            "playlist-read-private",
+            "playlist-read-collaborative",
+            "playlist-modify-public",
+            "playlist-modify-private",
+        ],
+        redirectUri,
+        responseType: AuthSession.ResponseType.Code,
+        usePKCE: true,
+    },
+    {
+        authorizationEndpoint: "https://accounts.spotify.com/authorize",
+        tokenEndpoint: "https://accounts.spotify.com/api/token",
+    },
+);
+```
+```ts
+const tokenResponse = await AuthSession.exchangeCodeAsync(
+    {
+        clientId: "<yourClientId>",
+        code: response.params.code,
+        redirectUri,
+        extraParams: {
+            code_verifier: request?.codeVerifier!,
+        },
+    },
+    {
+        tokenEndpoint: "https://accounts.spotify.com/api/token",
+    },
+);
+```
+```ts
+const redirectUri =
+  Platform.OS === "web"
+      ? "https://tobiaskeiner.github.io/notHitster/spotify-auth"
+      : AuthSession.makeRedirectUri({
+            scheme: "nothitster",
+            path: "spotify-auth",
+        });
+```
 
 ## Screenshots
 
