@@ -98,10 +98,13 @@ const SelectPlaylist = () => {
     const getSpotifyPlaylist = async () => {
         setAllSpotifyItems([]);
 
-        // example url: https://open.spotify.com/playlist/22iWDi8QmSrR6s8YugUzqx?si=4450f909ea374953
-        // example url: https://open.spotify.com/album/22iWDi8QmSrR6s8YugUzqx?si=4450f909ea374953
+        // example playlist: https://open.spotify.com/playlist/22iWDi8QmSrR6s8YugUzqx?si=4450f909ea374953
+        // example album: https://open.spotify.com/intl-de/album/7hNEcZy1mMUJBMyKStYyah?si=BMRO9-4SQn2fUmxC5Wlx6w
         const url = new URL(inputText);
-        const [, type, id] = url.pathname.split("/");
+        const segments = url.pathname.split("/").filter(Boolean);
+
+        const id = segments.at(-1);
+        const type = segments.at(-2);
 
         const token = await getValidSpotifyToken();
         if (!token) router.replace("/");
