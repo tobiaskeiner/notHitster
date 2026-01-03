@@ -99,12 +99,8 @@ const SelectPlaylist = () => {
         setAllSpotifyItems([]);
 
         // example playlist: https://open.spotify.com/playlist/22iWDi8QmSrR6s8YugUzqx?si=4450f909ea374953
-        // example album: https://open.spotify.com/intl-de/album/7hNEcZy1mMUJBMyKStYyah?si=BMRO9-4SQn2fUmxC5Wlx6w
         const url = new URL(inputText);
-        const segments = url.pathname.split("/").filter(Boolean);
-
-        const id = segments.at(-1);
-        const type = segments.at(-2);
+        const id = url.pathname.split("/").filter(Boolean).at(-1);
 
         const token = await getValidSpotifyToken();
         if (!token) router.replace("/");
@@ -112,7 +108,7 @@ const SelectPlaylist = () => {
         const collectedSpotifyItems: Item[] = [];
 
         try {
-            let nextUrl: string | null = `https://api.spotify.com/v1/${type}s/${id}/tracks`;
+            let nextUrl: string | null = `https://api.spotify.com/v1/playlists/${id}/tracks`;
             setIsLoading(true);
             while (nextUrl) {
                 const res = await fetch(nextUrl, {
