@@ -4,6 +4,7 @@ export type Track = {
     uri: string;
     album: Album;
     artists: Artist[];
+    popularity: number;
 };
 
 export type Artist = {

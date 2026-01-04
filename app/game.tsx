@@ -96,6 +96,12 @@ const styles = StyleSheet.create({
         marginTop: 4,
         textAlign: "center",
     },
+    popularity: {
+        fontSize: 18,
+        opacity: 0.8,
+        marginTop: 4,
+        textAlign: "center",
+    },
 });
 
 const Game = () => {
@@ -153,6 +159,7 @@ const Game = () => {
                                     <Text style={styles.artist}>
                                         {currentSong.track.artists.map((a) => a.name).join(", ")}
                                     </Text>
+                                    <Text style={styles.popularity}>Popularity: {currentSong.track.popularity}</Text>
                                 </View>
                             ) : (
                                 <View style={styles.solutionCard}>
